@@ -31,6 +31,16 @@
 $ npm install
 ```
 
+## MySQL database
+
+The application uses TypeORM with MySQL. Copy `.env.example` to `.env` and set
+`DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD` and `DB_NAME` for your MySQL
+server before starting the application. The database must already exist.
+
+Schema synchronization is disabled to avoid changing production databases
+implicitly. Entities and migrations must be added as the domain schema is defined.
+Automated tests do not connect to MySQL.
+
 ## Compile and run the project
 
 ```bash
