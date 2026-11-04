@@ -1,5 +1,10 @@
 import { Injectable, Inject, BadRequestException } from '@nestjs/common';
-import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
+import {
+  S3Client,
+  PutObjectCommand,
+  GetObjectCommand,
+  DeleteObjectCommand,
+} from '@aws-sdk/client-s3';
 import { ConfigService } from '@nestjs/config';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
@@ -43,5 +48,20 @@ export class StorageService {
       Key: key,
     });
     return getSignedUrl(this.s3Client, command, { expiresIn: 3600 });
+  }
+
+  async upload(key: string, body: Buffer, contentType: string): Promise<void> {
+    await this.s3Client.send(
+      new PutObjectCommand({
+        Bucket: this.bucketName,
+        Key: key,
+        Body: body,
+        ContentType: contentType,
+      }),
+    );
+  }
+
+  async delete(key: string): Promise<void> {
+    await this.s3Client.send(new DeleteObjectCommand({ Bucket: this.bucketName, Key: key }));
   }
 }
