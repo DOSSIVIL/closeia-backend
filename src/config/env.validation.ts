@@ -1,13 +1,24 @@
 import { plainToInstance } from 'class-transformer';
 import {
-  IsIn, IsInt, IsNotEmpty, IsOptional, IsString, Max, Min, MinLength, validateSync,
+  IsIn,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUrl,
+  Max,
+  Min,
+  MinLength,
+  validateSync,
 } from 'class-validator';
 
 export class EnvironmentVariables {
   @IsIn(['development', 'test', 'production'])
   NODE_ENV: string = 'development';
 
-  @IsInt() @Min(1) @Max(65535)
+  @IsInt()
+  @Min(1)
+  @Max(65535)
   PORT: number = 3000;
 
   @IsString() @IsNotEmpty() CORS_ORIGINS!: string;
@@ -15,7 +26,8 @@ export class EnvironmentVariables {
   // ==========================================
   // BASE DE DONNÉES NEON
   // ==========================================
-  @IsString() @IsNotEmpty() 
+  @IsString()
+  @IsNotEmpty()
   DATABASE_URL!: string;
 
   // ==========================================
@@ -30,14 +42,26 @@ export class EnvironmentVariables {
   // ==========================================
   // SÉCURITÉ & AUTH
   // ==========================================
-  @IsString() @MinLength(32, { message: 'JWT_SECRET doit contenir au moins 32 caractères' })
+  @IsString()
+  @MinLength(32, { message: 'JWT_SECRET doit contenir au moins 32 caractères' })
   JWT_SECRET!: string;
-  
+
   @IsString() @IsNotEmpty() JWT_EXPIRES_IN: string = '8h';
   @IsString() @IsNotEmpty() JWT_REMEMBER_EXPIRES_IN: string = '7d';
 
   @IsString() @IsNotEmpty() GOOGLE_CLIENT_IDS!: string;
   @IsOptional() @IsString() GOOGLE_CLIENT_SECRET?: string;
+
+  @IsOptional() @IsString() @IsNotEmpty() SMTP_HOST?: string;
+  @IsOptional() @IsInt() @Min(1) @Max(65535) SMTP_PORT?: number = 587;
+  @IsOptional() @IsString() @IsNotEmpty() SMTP_USER?: string;
+  @IsOptional() @IsString() @IsNotEmpty() SMTP_PASSWORD?: string;
+  @IsOptional() @IsString() @IsNotEmpty() SMTP_FROM?: string;
+  @IsOptional() @IsUrl({ require_tld: false }) FRONTEND_URL?: string;
+  @IsOptional()
+  @IsUrl({ require_tld: false })
+  MOBILE_APP_URL: string =
+    'https://play.google.com/store/apps/details?id=com.closeia.mobile';
 
   // ==========================================
   // ADMINISTRATEUR (SEED)
@@ -47,13 +71,37 @@ export class EnvironmentVariables {
   @IsIn(['true', 'false']) SEED_ADMIN_RESET_PASSWORD: string = 'false';
 }
 
-export function validateEnv(config: Record<string, unknown>): EnvironmentVariables {
-  const validated = plainToInstance(EnvironmentVariables, config, { enableImplicitConversion: true });
+export function validateEnv(
+  config: Record<string, unknown>,
+): EnvironmentVariables {
+  const validated = plainToInstance(EnvironmentVariables, config, {
+    enableImplicitConversion: true,
+  });
   const errors = validateSync(validated, { skipMissingProperties: false });
-  
+
+  const mailSettings = [
+    'SMTP_HOST',
+    'SMTP_USER',
+    'SMTP_PASSWORD',
+    'SMTP_FROM',
+    'FRONTEND_URL',
+  ] as const;
+  const configuredMailSettings = mailSettings.filter((key) => config[key]);
+  if (
+    configuredMailSettings.length > 0 &&
+    configuredMailSettings.length < mailSettings.length
+  ) {
+    throw new Error(
+      `Configuration e-mail incomplète. Renseignez toutes les variables : ${mailSettings.join(', ')}.`,
+    );
+  }
+
   if (errors.length > 0) {
     const details = errors
-      .map((e) => `- ${e.property} : ${Object.values(e.constraints ?? {}).join(', ')}`)
+      .map(
+        (e) =>
+          `- ${e.property} : ${Object.values(e.constraints ?? {}).join(', ')}`,
+      )
       .join('\n');
     throw new Error(`Fichier .env invalide :\n${details}`);
   }

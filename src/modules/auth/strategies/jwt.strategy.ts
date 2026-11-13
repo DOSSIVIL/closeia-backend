@@ -51,6 +51,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       schoolId: user.schoolId,
       roles: access.roles,
       permissions: access.permissions,
+      documentScopes: access.documentScopes,
       sessionId: payload.jti,
     };
   }

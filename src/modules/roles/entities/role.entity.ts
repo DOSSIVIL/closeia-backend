@@ -1,4 +1,12 @@
-import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  Index,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import type { DocumentScope } from '../roles.constants';
 
 @Entity('roles')
 export class Role {
@@ -14,6 +22,9 @@ export class Role {
 
   @Column({ type: 'json' })
   permissions!: string[];
+
+  @Column({ type: 'json', default: () => "'[]'" })
+  documentScopes!: DocumentScope[];
 
   @CreateDateColumn({ type: 'timestamptz' }) createdAt!: Date;
   @UpdateDateColumn({ type: 'timestamptz' }) updatedAt!: Date;

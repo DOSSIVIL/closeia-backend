@@ -22,6 +22,7 @@ export interface SessionUser {
   avatarUrl?: string;
   roles: string[];
   permissions: string[];
+  documentScopes: string[];
   schoolId?: string;
 }
 

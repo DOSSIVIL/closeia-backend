@@ -204,6 +204,7 @@ export class AuthService {
       avatarUrl: user.avatarUrl ?? undefined,
       roles: access.roles,
       permissions: access.permissions,
+      documentScopes: access.documentScopes,
       schoolId: user.schoolId ?? undefined,
     };
   }
