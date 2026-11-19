@@ -1,6 +1,7 @@
 import { Repository, EntityManager } from 'typeorm';
 import { School } from '../modules/schools/entities/school.entity';
 import { SchoolDomain } from '../modules/schools/entities/school-domain.entity';
+import { DocumentSpace } from '../espaces-documentaires/entities/document-space.entity';
 import { StorageService } from '../storage/storage.service';
 import { CreateEtablissementDto } from './dto/create-etablissement.dto';
 import { EtablissementsService } from './etablissements.service';
@@ -24,9 +25,13 @@ describe('EtablissementsService', () => {
       create: jest.fn((value) => value),
       save: jest.fn(async (value) => ({ id: 'domain-id', ...value })),
     };
+    const spaceRepository = {
+      create: jest.fn((value) => value),
+      save: jest.fn(async (value) => ({ id: 'space-id', ...value })),
+    };
     const transactionManager = {
       getRepository: jest.fn((entity: unknown) =>
-        entity === School ? schoolRepository : domainRepository,
+        entity === School ? schoolRepository : entity === DocumentSpace ? spaceRepository : domainRepository,
       ),
     };
     const manager = {
@@ -57,6 +62,9 @@ describe('EtablissementsService', () => {
     );
     expect(domainRepository.save).toHaveBeenCalledWith(
       expect.objectContaining({ domain: 'saintjean.example', schoolId: 'school-id' }),
+    );
+    expect(spaceRepository.save).toHaveBeenCalledWith(
+      expect.objectContaining({ schoolId: 'school-id', name: 'Général', isDefault: true }),
     );
     expect(result).toMatchObject({
       id: 'school-id',

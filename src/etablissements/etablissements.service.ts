@@ -8,6 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { randomUUID } from 'crypto';
 import { Repository } from 'typeorm';
 import { StorageService } from '../storage/storage.service';
+import { createDefaultSpace } from '../espaces-documentaires/espaces-documentaires.service';
 import { School } from '../modules/schools/entities/school.entity';
 import { SchoolDomain } from '../modules/schools/entities/school-domain.entity';
 import { CreateEtablissementDto } from './dto/create-etablissement.dto';
@@ -95,6 +96,7 @@ export class EtablissementsService {
       created.domains = [
         await domainRepo.save(domainRepo.create({ domain: dto.domaineEmail, schoolId: created.id })),
       ];
+      await createDefaultSpace(manager, created.id);
       return created;
     });
 

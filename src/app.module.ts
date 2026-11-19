@@ -9,6 +9,7 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { PermissionsGuard } from './common/guards/permissions.guard';
 import { SchoolsModule } from './modules/schools/schools.module';
 import { EtablissementsModule } from './etablissements/etablissements.module';
+import { EspacesDocumentairesModule } from './espaces-documentaires/espaces-documentaires.module';
 import { RolesModule } from './modules/roles/roles.module';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
@@ -29,6 +30,7 @@ import { StorageModule } from './storage/storage.module'; // <-- Ajouté
     StorageModule, // <-- Ajouté
     SchoolsModule,
     EtablissementsModule,
+    EspacesDocumentairesModule,
     RolesModule,
     UsersModule,
     AuthModule,
