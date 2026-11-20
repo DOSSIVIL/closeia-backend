@@ -41,6 +41,19 @@ Schema synchronization is disabled to avoid changing production databases
 implicitly. Entities and migrations must be added as the domain schema is defined.
 Automated tests do not connect to MySQL.
 
+## Admin dashboard
+
+- `GET /api/dashboard` returns live establishment and user totals, account statuses,
+  monthly registrations for the last six months, and the five most recently created
+  establishments with their user counts. It requires the `dashboard.read` permission.
+- `GET /api/dashboard/export` downloads the same scoped data as an Excel workbook
+  (`.xlsx`) with summary, registration, and establishment worksheets.
+- Platform administrators see platform-wide data. Other dashboard users are restricted
+  to their associated establishment; users without an establishment scope are denied.
+
+The dashboard reports only user and establishment data currently persisted by the API;
+it does not display placeholder document, conversation, or activity metrics.
+
 ## Compile and run the project
 
 ```bash

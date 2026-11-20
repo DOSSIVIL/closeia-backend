@@ -29,6 +29,7 @@ import {
 } from '../schools/school-email';
 import { WelcomeEmailService } from './welcome-email.service';
 import { ImportedUserInput, UserImportService } from './user-import.service';
+import { NotificationsService } from '../notifications/notifications.service';
 
 export interface AdminUserView {
   id: string;
@@ -75,6 +76,7 @@ export class UsersService {
     private readonly roles: RolesService,
     private readonly welcomeEmail: WelcomeEmailService,
     private readonly userImport: UserImportService,
+    private readonly notifications: NotificationsService,
   ) {}
 
   findById(id: string): Promise<User | null> {
@@ -217,6 +219,15 @@ export class UsersService {
         const roleScope =
           role.code === RoleCode.PlatformAdmin ? null : schoolId;
         await this.roles.assign(user.id, role.code, roleScope, em);
+        await this.notifications.createForUser(
+          user.id,
+          {
+            kind: 'success',
+            title: 'Bienvenue sur CloseIA',
+            message: `Votre compte ${role.name} pour ${school.name} a été créé. Consultez le courriel de bienvenue pour vos liens d’accès.`,
+          },
+          em,
+        );
         return user;
       });
       let welcomeEmailSent = false;

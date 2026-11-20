@@ -8,6 +8,7 @@ import { School } from '../schools/entities/school.entity';
 import { SchoolDomain } from '../schools/entities/school-domain.entity';
 import { WelcomeEmailService } from './welcome-email.service';
 import { UserImportService } from './user-import.service';
+import { NotificationsService } from '../notifications/notifications.service';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -31,6 +32,10 @@ describe('UsersService', () => {
         { provide: RolesService, useValue: rolesService },
         { provide: WelcomeEmailService, useValue: { sendWelcome: jest.fn() } },
         { provide: UserImportService, useValue: { parseFile: jest.fn() } },
+        {
+          provide: NotificationsService,
+          useValue: { createForUser: jest.fn() },
+        },
       ],
     }).compile();
 

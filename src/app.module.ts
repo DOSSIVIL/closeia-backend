@@ -13,6 +13,7 @@ import { RolesModule } from './modules/roles/roles.module';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { HealthModule } from './modules/health/health.module';
+import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { StorageModule } from './storage/storage.module'; // <-- Ajouté
 
 @Module({
@@ -31,6 +32,7 @@ import { StorageModule } from './storage/storage.module'; // <-- Ajouté
     EtablissementsModule,
     RolesModule,
     UsersModule,
+    DashboardModule,
     AuthModule,
     HealthModule,
   ],

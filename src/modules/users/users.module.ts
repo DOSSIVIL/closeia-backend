@@ -10,11 +10,13 @@ import { School } from '../schools/entities/school.entity';
 import { SchoolDomain } from '../schools/entities/school-domain.entity';
 import { WelcomeEmailService } from './welcome-email.service';
 import { UserImportService } from './user-import.service';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User, School, SchoolDomain]),
     RolesModule,
+    NotificationsModule,
     MailerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
